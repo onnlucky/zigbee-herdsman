@@ -31,7 +31,7 @@ class Group extends entity_1.default {
         this.members = members;
         this.meta = meta;
     }
-    static reload() { this.lookup = {}; }
+    static reload() { Group.lookup = {}; }
     isType(type) {
         return type === 'group';
     }
@@ -43,20 +43,20 @@ class Group extends entity_1.default {
      */
     static fromDatabaseRecord(record) {
         const group = new Group(record.id, record.groupID, record.members, record.meta);
-        this.lookup[group.groupID] = group;
+        Group.lookup[group.groupID] = group;
         return group;
     }
     toDatabaseRecord() {
         return { id: this.databaseID, type: 'Group', groupID: this.groupID, members: this.members, meta: this.meta };
     }
     static all() {
-        return Object.values(this.lookup);
+        return Object.values(Group.lookup);
     }
     static byID(groupID) {
-        return this.lookup[groupID];
+        return Group.lookup[groupID];
     }
     static findSingle(query) {
-        const results = this.find(query);
+        const results = Group.find(query);
         if (results.length === 1)
             return results[0];
         return undefined;
@@ -65,10 +65,10 @@ class Group extends entity_1.default {
         const queryKeys = Object.keys(query);
         // fast path
         if (queryKeys.length === 1 && query.groupID) {
-            const group = this.byID(query.groupID);
+            const group = Group.byID(query.groupID);
             return group ? [group] : [];
         }
-        return this.all().filter((d) => {
+        return Group.all().filter((d) => {
             for (const key of queryKeys) {
                 if (d[key] != query[key])
                     return false;
@@ -78,13 +78,13 @@ class Group extends entity_1.default {
     }
     static create(groupID) {
         assert_1.default(typeof groupID === 'number', 'GroupID must be a number');
-        if (this.byID(groupID)) {
+        if (Group.byID(groupID)) {
             throw new Error(`Group with groupID '${groupID}' already exists`);
         }
-        const databaseID = this.database.newID();
+        const databaseID = Group.database.newID();
         const group = new Group(databaseID, groupID, [], {});
-        this.database.insert(group.toDatabaseRecord());
-        this.lookup[group.groupID] = group;
+        Group.database.insert(group.toDatabaseRecord());
+        Group.lookup[group.groupID] = group;
         return group;
     }
     removeFromDatabase() {

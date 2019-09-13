@@ -47,7 +47,7 @@ class Device extends entity_1.default {
         this.interviewing = false;
         this.meta = meta;
     }
-    static reload() { this.lookup = {}; }
+    static reload() { Device.lookup = {}; }
     isType(type) {
         return type === 'device';
     }
@@ -95,7 +95,7 @@ class Device extends entity_1.default {
         });
         const meta = record.meta ? record.meta : {};
         const device = new Device(record.id, record.type, ieeeAddr, networkAddress, record.manufId, endpoints, record.manufName, record.powerSource, record.modelId, record.appVersion, record.stackVersion, record.zclVersion, record.hwVersion, record.dateCode, record.swBuildId, record.interviewCompleted, meta);
-        this.lookup[device.ieeeAddr] = device;
+        Device.lookup[device.ieeeAddr] = device;
         return device;
     }
     toDatabaseRecord() {
@@ -141,10 +141,10 @@ class Device extends entity_1.default {
         const queryKeys = Object.keys(query);
         // fast path
         if (queryKeys.length === 1 && query.ieeeAddr) {
-            const device = this.byAddress(query.ieeeAddr);
+            const device = Device.byAddress(query.ieeeAddr);
             return device ? [device] : [];
         }
-        return this.all().filter((d) => {
+        return Device.all().filter((d) => {
             for (const key of queryKeys) {
                 if (d[key] != query[key])
                     return false;
@@ -153,16 +153,16 @@ class Device extends entity_1.default {
         });
     }
     static create(type, ieeeAddr, networkAddress, manufacturerID, manufacturerName, powerSource, modelID, endpoints) {
-        if (this.byAddress(ieeeAddr)) {
+        if (Device.byAddress(ieeeAddr)) {
             throw new Error(`Device with ieeeAddr '${ieeeAddr}' already exists`);
         }
         const endpointsMapped = endpoints.map((e) => {
             return endpoint_1.default.create(e.ID, e.profileID, e.deviceID, e.inputClusters, e.outputClusters, networkAddress, ieeeAddr);
         });
-        const ID = this.database.newID();
+        const ID = Device.database.newID();
         const device = new Device(ID, type, ieeeAddr, networkAddress, manufacturerID, endpointsMapped, manufacturerName, powerSource, modelID, undefined, undefined, undefined, undefined, undefined, undefined, false, {});
-        this.database.insert(device.toDatabaseRecord());
-        this.lookup[device.ieeeAddr] = device;
+        Device.database.insert(device.toDatabaseRecord());
+        Device.lookup[device.ieeeAddr] = device;
         return device;
     }
     /**
