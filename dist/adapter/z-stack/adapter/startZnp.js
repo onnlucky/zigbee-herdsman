@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -40,13 +39,13 @@ const EndpointDefaults = {
     latencyreq: Constants.AF.networkLatencyReq.NO_LATENCY_REQS,
 };
 const Endpoints = [
-    Object.assign(Object.assign({}, EndpointDefaults), { endpoint: 1, appprofid: 0x0104 }),
-    Object.assign(Object.assign({}, EndpointDefaults), { endpoint: 2, appprofid: 0x0101 }),
-    Object.assign(Object.assign({}, EndpointDefaults), { endpoint: 3, appprofid: 0x0105 }),
-    Object.assign(Object.assign({}, EndpointDefaults), { endpoint: 4, appprofid: 0x0107 }),
-    Object.assign(Object.assign({}, EndpointDefaults), { endpoint: 5, appprofid: 0x0108 }),
-    Object.assign(Object.assign({}, EndpointDefaults), { endpoint: 6, appprofid: 0x0109 }),
-    Object.assign(Object.assign({}, EndpointDefaults), { endpoint: 11, appprofid: 0x0104, appdeviceid: 0x0400, appnumoutclusters: 1, appoutclusterlist: [Zcl.Utils.getCluster('ssIasZone').ID] }),
+    Object.assign({}, EndpointDefaults, { endpoint: 1, appprofid: 0x0104 }),
+    Object.assign({}, EndpointDefaults, { endpoint: 2, appprofid: 0x0101 }),
+    Object.assign({}, EndpointDefaults, { endpoint: 3, appprofid: 0x0105 }),
+    Object.assign({}, EndpointDefaults, { endpoint: 4, appprofid: 0x0107 }),
+    Object.assign({}, EndpointDefaults, { endpoint: 5, appprofid: 0x0108 }),
+    Object.assign({}, EndpointDefaults, { endpoint: 6, appprofid: 0x0109 }),
+    Object.assign({}, EndpointDefaults, { endpoint: 11, appprofid: 0x0104, appdeviceid: 0x0400, appnumoutclusters: 1, appoutclusterlist: [Zcl.Utils.getCluster('ssIasZone').ID] }),
 ];
 function validateItem(znp, item, message, subsystem = Subsystem.SYS, command = 'osalNvRead') {
     return __awaiter(this, void 0, void 0, function* () {
@@ -152,7 +151,7 @@ function initialise(znp, version, options) {
         yield znp.request(Subsystem.SYS, 'osalNvWrite', nvItems_1.default.znpHasConfigured(version));
     });
 }
-exports.default = (znp, version, options, backupPath) => __awaiter(void 0, void 0, void 0, function* () {
+exports.default = (znp, version, options, backupPath) => __awaiter(this, void 0, void 0, function* () {
     let result = 'resumed';
     let hasConfigured = false;
     try {

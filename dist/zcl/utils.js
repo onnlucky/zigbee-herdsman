@@ -49,9 +49,9 @@ function getCluster(key) {
         throw new Error(`Cluster with key '${key}' does not exist`);
     }
     // eslint-disable-next-line
-    const attributes = Object.assign({}, ...Object.entries(cluster.attributes).map(([k, v]) => ({ [k]: Object.assign(Object.assign({}, v), { name: k }) })));
+    const attributes = Object.assign({}, ...Object.entries(cluster.attributes).map(([k, v]) => ({ [k]: Object.assign({}, v, { name: k }) })));
     // eslint-disable-next-line
-    const commands = Object.assign({}, ...Object.entries(cluster.commands).map(([k, v]) => ({ [k]: Object.assign(Object.assign({}, v), { name: k }) })));
+    const commands = Object.assign({}, ...Object.entries(cluster.commands).map(([k, v]) => ({ [k]: Object.assign({}, v, { name: k }) })));
     const getAttribute = (key) => {
         let result = null;
         if (typeof key === 'number') {
@@ -94,7 +94,7 @@ function getCluster(key) {
         name,
         commands,
         // eslint-disable-next-line
-        commandsResponse: Object.assign({}, ...Object.entries(cluster.commandsResponse).map(([k, v]) => ({ [k]: Object.assign(Object.assign({}, v), { name: k }) }))),
+        commandsResponse: Object.assign({}, ...Object.entries(cluster.commandsResponse).map(([k, v]) => ({ [k]: Object.assign({}, v, { name: k }) }))),
         getAttribute,
         hasAttribute,
         getCommand,

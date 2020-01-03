@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -82,7 +81,7 @@ function Backup(znp) {
         const data = {};
         for (const [key, entry] of Object.entries(items)) {
             const result = yield znp.request(constants_1.Subsystem.SYS, 'osalNvRead', entry);
-            data[key] = Object.assign(Object.assign({}, entry), { value: result.payload.value.toJSON().data, len: result.payload.value.length });
+            data[key] = Object.assign({}, entry, { value: result.payload.value.toJSON().data, len: result.payload.value.length });
         }
         return {
             adapterType: 'zStack',
@@ -110,7 +109,7 @@ function Restore(znp, backupPath, options) {
         if (!fast_deep_equal_1.default(backup.data.ZCD_NV_PRECFGKEY.value, options.networkKey)) {
             throw new Error(`Cannot restore backup, networkKey of backup is different`);
         }
-        const ZCD_NV_NIB = Object.assign(Object.assign({}, backup.data.ZCD_NV_NIB), { initvalue: backup.data.ZCD_NV_NIB.value, initlen: backup.data.ZCD_NV_NIB.len });
+        const ZCD_NV_NIB = Object.assign({}, backup.data.ZCD_NV_NIB, { initvalue: backup.data.ZCD_NV_NIB.value, initlen: backup.data.ZCD_NV_NIB.len });
         const bdbNodeIsOnANetwork = {
             id: NvItemsIds.BDBNODEISONANETWORK,
             len: 0x01,
